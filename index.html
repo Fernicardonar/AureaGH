@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index - Tienda de Moda Exclusiva</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <div class="container">
+                <p>Envío GRATIS en compras superiores a $200.000</p>
+            </div>
+        </div>
+        <div class="container">
+            <nav class="navbar">
+                <img src="images/logo.jpg" alt="Liliam Boutique Logo">                
+                <button class="mobile-nav-toggle" id="navToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="mujer.html">Mujer</a></li>
+                    <li><a href="hombre.html">Hombre</a></li>
+                    <li><a href="destacados.html">Destacados</a></li>
+                    <li><a href="promociones.html">Promociones</a></li>
+                    <li><a href="#">Nosotros</a></li>
+                    <li><a href="contact.html">Contacto</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <a href="#"><i class="fas fa-search"></i></a>
+                    <a href="#"><i class="fas fa-user"></i></a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">           
+            <h1>Estilo y Elegancia</h1>
+            <p>Descubre con nosotros las últimas tendencias en moda</p>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="category-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Categorías</h2>
+            </div>
+            <div class="categories">
+                <div class="category-card">
+                    <img src="images/categories/Mujer/vestido 7.jpg" alt="Categoría Mujer">
+                    <div class="category-card-content">
+                        <h3>Mujer</h3>
+                        <a href="mujer.html" class="btn btn-outline">Ver productos</a>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="images/categories/Hombre/MONET5.jpg" alt="Categoría Hombre">
+                    <div class="category-card-content">
+                        <h3>Hombre</h3>
+                        <a href="hombre.html" class="btn btn-outline">Ver productos</a>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="images/categories/Accesorios/Zapatos Hombre.jpg" alt="Categoría Accesorios">
+                    <div class="category-card-content">
+                        <h3>Accesorios</h3>
+                        <a href="accesorios.html" class="btn btn-outline">Ver productos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="products-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Productos Destacados</h2>
+            </div>
+            <div class="products">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <div class="product-img">
+                        <img src="images/categories/Destacados/TOP1.jpg" alt="Producto 1">
+                        <span class="product-badge">Nuevo</span>
+                        <div class="product-actions">
+                            <div class="product-action-btn"><i class="fas fa-heart"></i></div>
+                            <div class="product-action-btn"><i class="fas fa-eye"></i></div>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Vestido Negro Elegance</h3>
+                        <div class="product-price">
+                            <span class="product-discount-price">$269.900</span>
+                        </div>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>(4.5)</span>
+                        </div>
+                        <div class="product-buy">
+                            <a href="#" 
+                                class="btn btn-whatsapp btn-sm btn-wsp" 
+                                data-producto="Chaqueta Denim Premium" 
+                                data-precio="159900">
+                                <i class="fab fa-whatsapp"></i> Comprar por WhatsApp
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <div class="product-img">
+                        <img src="images/categories/Destacados/TOP2.jpg" alt="Producto 2">
+                        <span class="product-badge">Nuevo</span>
+                        <div class="product-actions">
+                            <div class="product-action-btn"><i class="fas fa-heart"></i></div>
+                            <div class="product-action-btn"><i class="fas fa-eye"></i></div>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Conjunto Casual Black</h3>
+                        <div class="product-price">
+                            <span class="product-discount-price">$229.900</span>
+                        </div>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>(4.0)</span>
+                        </div>
+                        <div class="product-buy">
+                            <a href="#" 
+                                class="btn btn-whatsapp btn-sm btn-wsp" 
+                                data-producto="Chaqueta Denim Premium" 
+                                data-precio="159900">
+                                <i class="fab fa-whatsapp"></i> Comprar por WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <div class="product-img">
+                        <img src="images/categories/Destacados/TOP3.jpg" alt="Producto 3">
+                        <span class="product-badge">Nuevo</span>
+                        <div class="product-actions">
+                            <div class="product-action-btn"><i class="fas fa-heart"></i></div>
+                            <div class="product-action-btn"><i class="fas fa-eye"></i></div>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Conjunto Falda Gold</h3>
+                        <div class="product-price">
+                            <span class="product-discount-price">$179.900</span>
+                        </div>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>(5.0)</span>
+                        </div>
+                        <div class="product-buy">
+                            <a href="#" 
+                                class="btn btn-whatsapp btn-sm btn-wsp" 
+                                data-producto="Chaqueta Denim Premium" 
+                                data-precio="159900">
+                                <i class="fab fa-whatsapp"></i> Comprar por WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <div class="product-img">
+                        <img src="images/categories/Hombre/MONET1.jpg" alt="Producto 4">
+                        <span class="product-badge">Trending</span>
+                        <div class="product-actions">
+                            <div class="product-action-btn"><i class="fas fa-heart"></i></div>
+                            <div class="product-action-btn"><i class="fas fa-eye"></i></div>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Camiseta Grey</h3>
+                        <span class="product-badge">Nuevo</span>
+                        <div class="product-price">
+                            <span class="product-discount-price">$139.900</span>
+                        </div>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>(4.3)</span>
+                        </div>
+                        <div class="product-buy">
+                            <a href="#" 
+                                class="btn btn-whatsapp btn-sm btn-wsp" 
+                                data-producto="Chaqueta Denim Premium" 
+                                data-precio="159900">
+                                <i class="fab fa-whatsapp"></i> Comprar por WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 5 -->
+                <div class="product-card">
+                    <div class="product-img">
+                        <img src="images/categories/Hombre/MONET2.jpg" alt="Producto 5">
+                        <span class="product-badge">Nuenvo</span>
+                        <div class="product-actions">
+                            <div class="product-action-btn"><i class="fas fa-heart"></i></div>
+                            <div class="product-action-btn"><i class="fas fa-eye"></i></div>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Camiseta Pink</h3>
+                        <div class="product-price">
+                            <span class="product-discount-price">$139.900</span>
+                        </div>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>(4.0)</span>
+                        </div>
+                        <div class="product-buy">
+                            <a href="#" 
+                                class="btn btn-whatsapp btn-sm btn-wsp" 
+                                data-producto="Chaqueta Denim Premium" 
+                                data-precio="159900">
+                                <i class="fab fa-whatsapp"></i> Comprar por WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 6 -->
+                <div class="product-card">
+                    <div class="product-img">
+                        <img src="images/categories/Hombre/MONET3.jpg" alt="Producto 6">
+                        <span class="product-badge">Nuevo</span>
+                        <div class="product-actions">
+                            <div class="product-action-btn"><i class="fas fa-heart"></i></div>
+                            <div class="product-action-btn"><i class="fas fa-eye"></i></div>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Camiseta Black</h3>
+                        <div class="product-price">
+                            <span class="product-discount-price">$139.900</span>
+                        </div>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>(4.0)</span>
+                        </div>
+                        <div class="product-buy">
+                            <a href="#" 
+                                class="btn btn-whatsapp btn-sm btn-wsp" 
+                                data-producto="Chaqueta Denim Premium" 
+                                data-precio="159900">
+                                <i class="fab fa-whatsapp"></i> Comprar por WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section">
+        <div class="container">
+            <div class="about-container">
+                <div class="about-img">
+                    <img src="images/categories/Sedes/Tienda 1.jpg" alt="Liliam Boutique">
+                </div>
+                <div class="about-content">
+                    <h2>Sobre Liliam Boutique</h2>
+                    <p>Somos una boutique especializada en moda exclusiva para hombres y mujeres que buscan destacar con estilo y elegancia. Nuestra pasión por la moda nos impulsa a seleccionar cuidadosamente cada prenda.</p>
+                    <p>Con más de 10 años de experiencia en el sector, nos hemos convertido en la referencia de moda en la región, ofreciendo las últimas tendencias y piezas únicas que no encontrarás en ningún otro lugar.</p>
+                    <p>Creemos que la moda es una forma de expresar tu personalidad, por eso cada prenda de nuestra colección está pensada para que te sientas único y seguro de ti mismo.</p>
+                    <a href="#" class="btn">Conoce más</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Nuestras Tiendas -->
+<section class="tiendas-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Nuestras Tiendas</h2>
+            <p>Visítanos En Nuestras Tiendas Físicas</p>
+        </div>
+        <div class="tiendas-grid">
+            <div class="tienda-item">
+                <div class="tienda-imagen">
+                    <img src="images/categories/Sedes/sede2.png" alt="Tienda Principal">
+                </div>
+                <div class="tienda-info">
+                    <h3>Tienda Principal</h3>
+                    <div class="info-detalle">
+                        <p class="horario">
+                            <i class="fas fa-clock"></i>
+                            Lunes a Sábado: 10:00 AM - 7:00 PM<br>
+                            Domingos y festivos: Cerrado
+                        </p>
+                        <p class="ubicacion">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Cra 50 %52-13<br>
+                            Bello, Antioquia
+                        </p>
+                        <p class="telefono">
+                            <i class="fas fa-phone"></i>
+                            +57 604 4736501
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tienda-item">
+                <div class="tienda-imagen">
+                    <img src="images/categories/Sedes/sede1.png" alt="Sucursal PNorte">
+                </div>
+                <div class="tienda-info">
+                    <h3>Sucursal CC Puerta del Norte</h3>
+                    <div class="info-detalle">
+                        <p class="horario">
+                            <i class="fas fa-clock"></i>
+                            Lunes a Domingo: 11:00 AM - 9:00 PM<br>
+                        </p>
+                        <p class="ubicacion">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Dg 55 #34-67 Local 1149<br>
+                            Bello, Antioquia
+                        </p>
+                        <p class="telefono">
+                            <i class="fas fa-phone"></i>
+                            +57 604 4531552
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Newsletter -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-container">
+                <h2>Mantente al día</h2>
+                <p>Suscríbete a nuestro newsletter y recibe las últimas novedades, ofertas exclusivas y tips de moda directamente en tu email.</p>
+                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                    <input type="email" placeholder="Tu email aquí..." required>
+                    <button type="submit">Suscribirse</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+<!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>Liliam Boutique</h3>
+                    <p>Tu destino para la moda exclusiva y las últimas tendencias. Estilo, elegancia y calidad en cada prenda.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Enlaces rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Inicio</a></li>
+                        <li><a href="#">Mujer</a></li>
+                        <li><a href="#">Hombre</a></li>
+                        <li><a href="#">Novedades</a></li>
+                        <li><a href="#">Promociones</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contacto</h3>
+                    <div class="footer-contact">
+                        <i class="fas fa-phone"></i>
+                        <span>+57 300 600 3786</span>
+                    </div>
+                    <div class="footer-contact">
+                        <i class="fas fa-envelope"></i>
+                        <span>info@liliamboutique.com</span>
+                    </div>
+                        <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Liliam Boutique. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/573006003786" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- JavaScript -->
+    <script src="js/script.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+
+</body>
+</html>
