@@ -11,6 +11,7 @@ const Register = () => {
     telefono: ''
   })
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
   const { register } = useAuth()
   const navigate = useNavigate()
@@ -22,6 +23,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setSuccess('')
 
     if (formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden')
@@ -42,12 +44,17 @@ const Register = () => {
       telefono: formData.telefono
     })
 
+    setLoading(false)
+
     if (result.success) {
-      navigate('/dashboard')
+      setSuccess(`¡Cuenta creada exitosamente! Bienvenido/a ${formData.nombre}`)
+      // Redirigir después de 2 segundos para que el usuario vea el mensaje
+      setTimeout(() => {
+        navigate('/dashboard')
+      }, 2000)
     } else {
       setError(result.error)
     }
-    setLoading(false)
   }
 
   return (
@@ -56,7 +63,7 @@ const Register = () => {
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-800">Crear Cuenta</h2>
-            <p className="text-gray-600 mt-2">Únete a Liliam Boutique</p>
+            <p className="text-gray-600 mt-2">Únete a Áurea Virtual Shop</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -130,12 +137,19 @@ const Register = () => {
               </div>
             )}
 
+            {success && (
+              <div className="bg-green-100 text-green-700 p-3 rounded-md text-sm flex items-center">
+                <i className="fas fa-check-circle mr-2"></i>
+                {success}
+              </div>
+            )}
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || success}
               className="w-full btn btn-primary disabled:opacity-50"
             >
-              {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
+              {loading ? 'Creando cuenta...' : success ? 'Redirigiendo...' : 'Crear Cuenta'}
             </button>
           </form>
 

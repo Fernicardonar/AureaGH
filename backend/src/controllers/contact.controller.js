@@ -21,7 +21,7 @@ exports.sendContactMessage = async (req, res) => {
     })
 
     const mensajeCompleto = `
-Nuevo mensaje de contacto desde Liliam Boutique
+Nuevo mensaje de contacto desde Áurea Virtual Shop
 
 Nombre: ${nombre}
 Email: ${email}

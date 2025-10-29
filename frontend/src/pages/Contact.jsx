@@ -128,24 +128,21 @@ const Contact = () => {
                   <i className="fas fa-phone text-primary text-xl mr-4 mt-1"></i>
                   <div>
                     <h3 className="font-semibold mb-1">Teléfono</h3>
-                    <p className="text-gray-600">+57 300 600 3786</p>
-                    <p className="text-gray-600">+57 604 4736501</p>
-                    <p className="text-gray-600">+57 604 4531552</p>
+                    <p className="text-gray-600">+57 3054412261</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <i className="fas fa-envelope text-primary text-xl mr-4 mt-1"></i>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-gray-600">info@liliamboutique.com</p>
+                    <p className="text-gray-600">aureavirtualshop@gmail.com</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <i className="fas fa-map-marker-alt text-primary text-xl mr-4 mt-1"></i>
                   <div>
                     <h3 className="font-semibold mb-1">Ubicaciones</h3>
-                    <p className="text-gray-600 mb-2">Cra 50 #52-13, Bello, Antioquia</p>
-                    <p className="text-gray-600">Dg 55 #34-67 Local 1149, CC Puerta del Norte</p>
+                    <p className="text-gray-600 mb-2">Tienda virtual Antioquia Colombia</p>
                   </div>
                 </div>
               </div>
@@ -155,13 +152,9 @@ const Contact = () => {
               <h2 className="text-2xl font-bold mb-6">Horarios de Atención</h2>
               <div className="space-y-3">
                 <div>
-                  <h3 className="font-semibold">Tienda Principal</h3>
-                  <p className="text-gray-600">Lunes a Sábado: 10:00 AM - 7:00 PM</p>
+                  <h3 className="font-semibold">Atención virtual</h3>
+                  <p className="text-gray-600">Lunes a Sábado: 10:00 AM - 6:00 PM</p>
                   <p className="text-gray-600">Domingo: Cerrado</p>
-                </div>
-                <div className="mt-4">
-                  <h3 className="font-semibold">CC Puerta del Norte</h3>
-                  <p className="text-gray-600">Lunes a Domingo: 11:00 AM - 9:00 PM</p>
                 </div>
               </div>
             </div>

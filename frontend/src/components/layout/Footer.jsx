@@ -25,15 +25,19 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* About */}
           <div>
-            <h3 className="text-xl font-semibold mb-4">Liliam Boutique</h3>
+            <h3 className="text-xl font-semibold mb-4">Aurea Virtual Shop</h3>
             <p className="text-gray-400 mb-4">
               Tu destino para la moda exclusiva y las últimas tendencias. Estilo, elegancia y calidad en cada prenda.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition">
+              <a href="https://web.facebook.com/profile.php?id=61572735548240" 
+              className="text-gray-400 hover:text-white transition"
+                target="_blank" rel="noopener noreferrer">                
                 <i className="fab fa-facebook-f text-xl"></i>
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition">
+              <a href="https://www.instagram.com/aurea_virtual_shop?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+              className="text-gray-400 hover:text-white transition"
+                target="_blank" rel="noopener noreferrer">            
                 <i className="fab fa-instagram text-xl"></i>
               </a>
             </div>
@@ -57,11 +61,11 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center text-gray-400">
                 <i className="fas fa-phone mr-3"></i>
-                <span>+57 300 600 3786</span>
+                <span>+57 3054412261</span>
               </div>
               <div className="flex items-center text-gray-400">
                 <i className="fas fa-envelope mr-3"></i>
-                <span>info@liliamboutique.com</span>
+                <span>aureavirtualshop@gmail.com</span>
               </div>
             </div>
           </div>
@@ -92,7 +96,7 @@ const Footer = () => {
         <hr className="border-gray-700 mb-6" />
 
         <div className="text-center text-gray-400">
-          <p>&copy; 2024 Liliam Boutique. Todos los derechos reservados.</p>
+          <p>&copy; 2025 Aurea Virtual Shop. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>

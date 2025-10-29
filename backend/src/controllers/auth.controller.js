@@ -8,8 +8,11 @@ exports.register = async (req, res) => {
   try {
     const { nombre, email, password, telefono } = req.body
 
+    // Normalizar email para evitar problemas de unicidad (Mongoose lo guarda en lowercase)
+    const normalizedEmail = (email || '').toLowerCase().trim()
+
     // Verificar si el usuario ya existe
-    const userExists = await User.findOne({ email })
+    const userExists = await User.findOne({ email: normalizedEmail })
     if (userExists) {
       return res.status(400).json({ message: 'El email ya está registrado' })
     }
@@ -17,12 +20,16 @@ exports.register = async (req, res) => {
     // Crear usuario
     const user = await User.create({
       nombre,
-      email,
+      email: normalizedEmail,
       password,
       telefono
     })
 
     if (user) {
+      // Validar que exista JWT_SECRET para generar el token
+      if (!process.env.JWT_SECRET) {
+        return res.status(500).json({ message: 'Configuración inválida del servidor: falta JWT_SECRET' })
+      }
       res.status(201).json({
         _id: user._id,
         nombre: user.nombre,
@@ -31,8 +38,14 @@ exports.register = async (req, res) => {
         role: user.role,
         token: generateToken(user._id)
       })
+    } else {
+      return res.status(400).json({ message: 'No se pudo crear el usuario. Revisa los datos enviados.' })
     }
   } catch (error) {
+    // Manejo especial de error por duplicado de email (índice único)
+    if (error && (error.code === 11000 || (error.message || '').includes('E11000'))) {
+      return res.status(400).json({ message: 'El email ya está registrado' })
+    }
     res.status(500).json({ message: 'Error al registrar usuario', error: error.message })
   }
 }
