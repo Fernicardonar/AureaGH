@@ -44,14 +44,20 @@ const productSchema = new mongoose.Schema({
   },
   rating: {
     type: Number,
-    default: 4.0,
+    default: 0,
     min: 0,
     max: 5
   },
-  reviews: {
+  reviewsCount: {
     type: Number,
     default: 0
   },
+  reviews: [{
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    rating: { type: Number, required: true, min: 1, max: 5 },
+    comment: { type: String, trim: true },
+    createdAt: { type: Date, default: Date.now }
+  }],
   badge: {
     type: String,
     enum: ['Nuevo', 'Trending', 'Oferta', ''],

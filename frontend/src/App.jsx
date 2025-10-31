@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import { FavoritesProvider } from './context/FavoritesContext'
 import { CartProvider } from './context/CartContext'
 import { ProductProvider } from './context/ProductContext'
 
@@ -25,8 +26,9 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <ProductProvider>
-          <CartProvider>
+        <FavoritesProvider>
+          <ProductProvider>
+            <CartProvider>
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
@@ -50,8 +52,9 @@ function App() {
                 />
               </Route>
             </Routes>
-          </CartProvider>
-        </ProductProvider>
+            </CartProvider>
+          </ProductProvider>
+        </FavoritesProvider>
       </AuthProvider>
     </Router>
   )

@@ -14,7 +14,7 @@ const products = [
     stock: 15,
     rating: 4.5,
     badge: 'Nuevo',
-    featured: true,
+    featured: false,
     sizes: ['S', 'M', 'L'],
     colors: ['Negro']
   },

@@ -32,7 +32,7 @@ app.use('/api/contact', contactRoutes)
 
 // Ruta de prueba
 app.get('/api', (req, res) => {
-  res.json({ message: 'API de Liliam Boutique funcionando correctamente' })
+  res.json({ message: 'API de Áurea Virtual Shop funcionando correctamente' })
 })
 
 // Manejo de errores

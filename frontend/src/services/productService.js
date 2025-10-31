@@ -29,3 +29,13 @@ export const searchProducts = async (query) => {
   const response = await api.get(`/products/search?q=${query}`)
   return response.data
 }
+
+export const addReview = async (productId, { rating, comment }) => {
+  const response = await api.post(`/products/${productId}/reviews`, { rating, comment })
+  return response.data
+}
+
+export const toggleFavorite = async (productId) => {
+  const response = await api.post(`/products/${productId}/favorite`)
+  return response.data
+}

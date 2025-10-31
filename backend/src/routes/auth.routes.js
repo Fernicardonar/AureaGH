@@ -7,7 +7,8 @@ const {
   register,
   login,
   getMe,
-  updateProfile
+  updateProfile,
+  getMyFavorites
 } = require('../controllers/auth.controller')
 
 // Validaciones
@@ -29,5 +30,6 @@ router.post('/login', loginValidation, validate, login)
 // Rutas protegidas
 router.get('/me', protect, getMe)
 router.put('/profile', protect, updateProfile)
+router.get('/favorites', protect, getMyFavorites)
 
 module.exports = router

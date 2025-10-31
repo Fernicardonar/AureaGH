@@ -1,23 +1,38 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
+import { useFavorites } from '../context/FavoritesContext'
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart()
+  const { isAuthenticated } = useAuth()
+  const { isFavorite, toggleFavorite, loaded } = useFavorites()
+  const navigate = useNavigate()
 
   const handleAddToCart = () => {
     addToCart(product)
   }
 
   const handleWhatsApp = () => {
-    const telefono = "573006003786"
+    const telefono = "573054412261"
     const mensaje = `Hola, estoy interesado/a en el producto: *${product.name}* por $${product.price.toLocaleString('es-CO')} ¿Está disponible?`
     const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
     window.open(url, "_blank")
   }
 
+  const handleToggleFavorite = async (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!isAuthenticated) {
+      navigate('/login')
+      return
+    }
+    await toggleFavorite(product._id)
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-      <Link to={`/producto/${product._id}`} className="block relative group">
+  <Link to={`/producto/${product._id}`} className="block relative group">
         <img 
           src={product.image || '/images/placeholder.jpg'} 
           alt={product.name}
@@ -29,8 +44,12 @@ const ProductCard = ({ product }) => {
           </span>
         )}
         <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button className="bg-white text-gray-700 p-2 rounded-full shadow-md hover:bg-gray-100 mb-2">
-            <i className="fas fa-heart"></i>
+          <button
+            onClick={handleToggleFavorite}
+            title={isAuthenticated ? (isFavorite(product._id) ? 'Quitar de favoritos' : 'Agregar a favoritos') : 'Inicia sesión para guardar favoritos'}
+            className={`bg-white p-2 rounded-full shadow-md hover:bg-gray-100 mb-2 ${isFavorite(product._id) ? 'text-red-500' : 'text-gray-700'}`}
+          >
+            <i className={`${isFavorite(product._id) ? 'fas' : 'far'} fa-heart`}></i>
           </button>
         </div>
       </Link>

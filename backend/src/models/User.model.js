@@ -36,6 +36,7 @@ const userSchema = new mongoose.Schema({
     departamento: String,
     codigoPostal: String
   },
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
   createdAt: {
     type: Date,
     default: Date.now

@@ -10,7 +10,9 @@ const {
   searchProducts,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  addOrUpdateReview,
+  toggleFavorite
 } = require('../controllers/product.controller')
 
 // Rutas públicas
@@ -25,5 +27,9 @@ router.get('/:id', getProductById)
 router.post('/', protect, admin, createProduct)
 router.put('/:id', protect, admin, updateProduct)
 router.delete('/:id', protect, admin, deleteProduct)
+
+// Rutas protegidas (Usuario)
+router.post('/:id/reviews', protect, addOrUpdateReview)
+router.post('/:id/favorite', protect, toggleFavorite)
 
 module.exports = router

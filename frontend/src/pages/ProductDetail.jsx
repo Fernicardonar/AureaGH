@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { getProductById } from '../services/productService'
+import { getProductById, addReview } from '../services/productService'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
 
 const ProductDetail = () => {
   const { id } = useParams()
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
+  const [myRating, setMyRating] = useState(0)
+  const [submitting, setSubmitting] = useState(false)
   const { addToCart } = useCart()
+  const { isAuthenticated } = useAuth()
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -33,6 +37,21 @@ const ProductDetail = () => {
     const mensaje = `Hola, estoy interesado/a en el producto: *${product.name}* por $${product.price.toLocaleString('es-CO')}. Cantidad: ${quantity}. ¿Está disponible?`
     const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
     window.open(url, "_blank")
+  }
+
+  const submitRating = async () => {
+    if (!isAuthenticated) return
+    if (!myRating) return
+    try {
+      setSubmitting(true)
+      const data = await addReview(id, { rating: myRating })
+      // Actualizar rating promedio y conteo en pantalla
+      setProduct(prev => prev ? { ...prev, rating: data.rating, reviewsCount: data.reviewsCount } : prev)
+    } catch (e) {
+      console.error('Error enviando calificación', e)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (loading) {
@@ -85,18 +104,43 @@ const ProductDetail = () => {
             <h1 className="text-4xl font-bold text-gray-800 mb-4">{product.name}</h1>
             
             <div className="flex items-center mb-6">
-              {[...Array(5)].map((_, index) => (
-                <i 
-                  key={index}
-                  className={`fas fa-star ${
-                    index < Math.floor(product.rating || 4) 
-                      ? 'text-yellow-400' 
-                      : 'text-gray-300'
-                  }`}
-                ></i>
-              ))}
-              <span className="text-gray-600 ml-2">({product.rating || 4.0})</span>
+              {[...Array(5)].map((_, index) => {
+                const filled = index < Math.floor(product.rating || 0)
+                return (
+                  <i
+                    key={index}
+                    className={`fas fa-star ${filled ? 'text-yellow-400' : 'text-gray-300'}`}
+                  ></i>
+                )
+              })}
+              <span className="text-gray-600 ml-2">({product.rating?.toFixed?.(1) || 0})</span>
             </div>
+
+            {/* Interactive rating for authenticated users */}
+            {isAuthenticated && (
+              <div className="mb-6">
+                <div className="flex items-center">
+                  {[1,2,3,4,5].map(star => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setMyRating(star)}
+                      className="mr-1"
+                      aria-label={`Calificar ${star} estrellas`}
+                    >
+                      <i className={`${myRating >= star ? 'fas' : 'far'} fa-star text-2xl ${myRating >= star ? 'text-yellow-400' : 'text-gray-400'}`}></i>
+                    </button>
+                  ))}
+                  <button
+                    onClick={submitRating}
+                    disabled={!myRating || submitting}
+                    className="ml-3 btn btn-primary btn-sm disabled:opacity-50"
+                  >
+                    {submitting ? 'Guardando...' : 'Guardar calificación'}
+                  </button>
+                </div>
+              </div>
+            )}
 
             <div className="mb-6">
               {product.originalPrice && (

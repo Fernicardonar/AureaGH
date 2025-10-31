@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const userMenuCloseTimeout = useRef(null)
   const { user, logout } = useAuth()
   const { getCartCount } = useCart()
   const navigate = useNavigate()
@@ -12,6 +14,25 @@ const Header = () => {
   const handleLogout = () => {
     logout()
     navigate('/')
+  }
+
+  // Handlers to keep the user menu open briefly when moving the cursor
+  const openUserMenu = () => {
+    if (userMenuCloseTimeout.current) {
+      clearTimeout(userMenuCloseTimeout.current)
+      userMenuCloseTimeout.current = null
+    }
+    setIsUserMenuOpen(true)
+  }
+
+  const closeUserMenuWithDelay = () => {
+    if (userMenuCloseTimeout.current) {
+      clearTimeout(userMenuCloseTimeout.current)
+    }
+    userMenuCloseTimeout.current = setTimeout(() => {
+      setIsUserMenuOpen(false)
+      userMenuCloseTimeout.current = null
+    }, 300) // delay hide to allow moving from icon to panel
   }
 
   return (
@@ -44,21 +65,42 @@ const Header = () => {
           {/* Icons */}
           <div className="flex items-center space-x-4">
             {user ? (
-              <div className="relative group">
-                <button className="text-gray-700 hover:text-primary transition">
+              <div
+                className="relative"
+                onMouseEnter={openUserMenu}
+                onMouseLeave={closeUserMenuWithDelay}
+              >
+                <button
+                  type="button"
+                  className="flex items-center text-gray-700 hover:text-primary transition"
+                  onClick={() => setIsUserMenuOpen((v) => !v)}
+                >
+                  
+                  {/* Username next to the icon (hide on very small screens) */}
+                  {user?.nombre && (
+                    <span className="ml-2 hidden sm:inline text-sm text-gray-700">
+                      {user.nombre}
+                    </span>
+                  )}
                   <i className="fas fa-user text-xl"></i>
                 </button>
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 hidden group-hover:block z-50">
-                  <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Mi Cuenta
-                  </Link>
-                  <button 
-                    onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Cerrar Sesión
-                  </button>
-                </div>
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+                    <Link
+                      to="/dashboard"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Mi Cuenta
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Cerrar Sesión
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <Link to="/login" className="text-gray-700 hover:text-primary transition">

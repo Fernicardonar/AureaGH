@@ -19,3 +19,8 @@ export const updateProfile = async (userData) => {
   const response = await api.put('/auth/profile', userData)
   return response.data
 }
+
+export const getMyFavorites = async () => {
+  const response = await api.get('/auth/favorites')
+  return response.data
+}

@@ -1,4 +1,5 @@
 const Product = require('../models/Product.model')
+const User = require('../models/User.model')
 
 // @desc    Obtener todos los productos
 // @route   GET /api/products
@@ -131,5 +132,72 @@ exports.deleteProduct = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: 'Error al eliminar producto', error: error.message })
+  }
+}
+
+// @desc    Crear o actualizar reseña/calificación del producto
+// @route   POST /api/products/:id/reviews
+// @access  Private
+exports.addOrUpdateReview = async (req, res) => {
+  try {
+    const { rating, comment } = req.body
+    const product = await Product.findById(req.params.id)
+
+    if (!product) {
+      return res.status(404).json({ message: 'Producto no encontrado' })
+    }
+
+    const parsedRating = Number(rating)
+    if (!parsedRating || parsedRating < 1 || parsedRating > 5) {
+      return res.status(400).json({ message: 'La calificación debe ser un número entre 1 y 5' })
+    }
+
+    // Buscar si ya existe reseña del usuario
+    const existing = product.reviews.find(r => r.user.toString() === req.user._id.toString())
+    if (existing) {
+      existing.rating = parsedRating
+      if (comment !== undefined) existing.comment = comment
+      existing.createdAt = new Date()
+    } else {
+      product.reviews.push({ user: req.user._id, rating: parsedRating, comment })
+    }
+
+    // Recalcular promedio y conteo
+    product.reviewsCount = product.reviews.length
+    const sum = product.reviews.reduce((acc, r) => acc + r.rating, 0)
+    product.rating = product.reviewsCount ? (sum / product.reviewsCount) : 0
+
+    await product.save()
+
+    const userReview = product.reviews.find(r => r.user.toString() === req.user._id.toString())
+    res.json({ rating: product.rating, reviewsCount: product.reviewsCount, userReview })
+  } catch (error) {
+    res.status(500).json({ message: 'Error al guardar reseña', error: error.message })
+  }
+}
+
+// @desc    Marcar/Desmarcar favorito para el usuario actual
+// @route   POST /api/products/:id/favorite
+// @access  Private
+exports.toggleFavorite = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id)
+    if (!user) return res.status(401).json({ message: 'Usuario no autorizado' })
+
+    const productId = req.params.id
+    const index = (user.favorites || []).findIndex(p => p.toString() === productId)
+    let favorited = false
+    if (index >= 0) {
+      user.favorites.splice(index, 1)
+      favorited = false
+    } else {
+      user.favorites = user.favorites || []
+      user.favorites.push(productId)
+      favorited = true
+    }
+    await user.save()
+    res.json({ favorited, favorites: user.favorites })
+  } catch (error) {
+    res.status(500).json({ message: 'Error al actualizar favorito', error: error.message })
   }
 }

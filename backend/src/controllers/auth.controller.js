@@ -126,3 +126,18 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: 'Error al actualizar perfil', error: error.message })
   }
 }
+
+// @desc    Obtener favoritos del usuario actual
+// @route   GET /api/auth/favorites
+// @access  Private
+exports.getMyFavorites = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate({
+      path: 'favorites',
+      select: 'name price image category rating reviewsCount'
+    })
+    res.json({ favorites: user.favorites || [] })
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener favoritos', error: error.message })
+  }
+}
