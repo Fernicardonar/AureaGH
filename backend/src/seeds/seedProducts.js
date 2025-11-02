@@ -3,6 +3,40 @@ const mongoose = require('mongoose')
 const Product = require('../models/Product.model')
 const connectDB = require('../config/database')
 
+/**
+ * GUÍA DE USO DE VARIANTES Y DETALLES
+ * =====================================
+ * 
+ * VARIANTES (stock por talla y color):
+ * - Cada combinación de talla + color debe tener su propia entrada en el array 'variants'
+ * - Ejemplo: Si tienes 3 tallas (S, M, L) y 2 colores (Negro, Blanco) = 6 variantes
+ * - Formato: { size: 'M', color: 'Negro', stock: 5, sku: 'PROD-M-NEG' }
+ * - El stock total del producto debe ser la suma de todos los stocks de las variantes
+ * 
+ * DETALLES DEL PRODUCTO:
+ * - materials: Composición del producto (ej: "95% Poliéster, 5% Elastano")
+ * - care: Instrucciones de cuidado y lavado
+ * - features: Array de características destacadas
+ * - fit: Información sobre el ajuste/talla (ej: "Corte regular, talla normalmente")
+ * 
+ * FUNCIÓN AUXILIAR PARA GENERAR VARIANTES:
+ */
+function generateVariants(sizes, colors, stockPerVariant = 3, prefix = 'PROD') {
+  const variants = []
+  sizes.forEach(size => {
+    colors.forEach(color => {
+      const colorCode = color.substring(0, 3).toUpperCase()
+      variants.push({
+        size,
+        color,
+        stock: stockPerVariant,
+        sku: `${prefix}-${size}-${colorCode}`
+      })
+    })
+  })
+  return variants
+}
+
 const products = [
   // PRODUCTOS MUJER (12 productos)
   {
@@ -11,12 +45,30 @@ const products = [
     price: 269900,
     category: 'mujer',
     image: '/images/categories/Destacados/TOP1.jpg',
-    stock: 15,
+    stock: 15, // Stock total (suma de todas las variantes)
     rating: 4.5,
     badge: 'Nuevo',
     featured: false,
     sizes: ['S', 'M', 'L'],
-    colors: ['Negro']
+    colors: ['Negro'],
+    // Stock específico por cada combinación de talla y color
+    variants: [
+      { size: 'S', color: 'Negro', stock: 5, sku: 'VNE-S-NEG' },
+      { size: 'M', color: 'Negro', stock: 6, sku: 'VNE-M-NEG' },
+      { size: 'L', color: 'Negro', stock: 4, sku: 'VNE-L-NEG' }
+    ],
+    // Detalles adicionales del producto
+    details: {
+      materials: '95% Poliéster, 5% Elastano',
+      care: 'Lavar a máquina con agua fría. No usar blanqueador. Secar en plano.',
+      features: [
+        'Diseño elegante y versátil',
+        'Cierre trasero con cremallera invisible',
+        'Forro interior suave',
+        'Corte ajustado en la cintura'
+      ],
+      fit: 'Corte regular, talla normalmente'
+    }
   },
   {
     name: 'Conjunto Casual Black',
@@ -29,7 +81,19 @@ const products = [
     badge: 'Trending',
     featured: true,
     sizes: ['S', 'M', 'L', 'XL'],
-    colors: ['Negro']
+    colors: ['Negro'],
+    // Usando la función auxiliar para generar variantes automáticamente
+    variants: generateVariants(['S', 'M', 'L', 'XL'], ['Negro'], 5, 'CCB'),
+    details: {
+      materials: '100% Algodón orgánico',
+      care: 'Lavar a máquina a 30°C. Secar a la sombra.',
+      features: [
+        'Tejido suave y transpirable',
+        'Diseño casual versátil',
+        'Perfecto para uso diario'
+      ],
+      fit: 'Corte holgado, para un ajuste más ceñido considera una talla menos'
+    }
   },
   {
     name: 'Conjunto Falda Gold',
@@ -44,7 +108,27 @@ const products = [
     featured: true,
     onSale: true,
     sizes: ['S', 'M', 'L'],
-    colors: ['Dorado', 'Negro']
+    colors: ['Dorado', 'Negro'],
+    // Variantes con 2 colores y 3 tallas = 6 combinaciones
+    variants: [
+      { size: 'S', color: 'Dorado', stock: 2, sku: 'CFG-S-DOR' },
+      { size: 'M', color: 'Dorado', stock: 3, sku: 'CFG-M-DOR' },
+      { size: 'L', color: 'Dorado', stock: 1, sku: 'CFG-L-DOR' },
+      { size: 'S', color: 'Negro', stock: 2, sku: 'CFG-S-NEG' },
+      { size: 'M', color: 'Negro', stock: 3, sku: 'CFG-M-NEG' },
+      { size: 'L', color: 'Negro', stock: 1, sku: 'CFG-L-NEG' }
+    ],
+    details: {
+      materials: '80% Algodón, 15% Poliéster, 5% Elastano',
+      care: 'Lavar a mano en agua fría. No usar blanqueador. Planchar a temperatura baja.',
+      features: [
+        'Conjunto de 2 piezas (top y falda)',
+        'Detalles metálicos en dorado',
+        'Elástico en la cintura para mayor comodidad',
+        'Perfecto para eventos especiales'
+      ],
+      fit: 'Corte ajustado, se recomienda talla habitual'
+    }
   },
   {
     name: 'Vestido Floral Primavera',
@@ -195,8 +279,8 @@ const products = [
     rating: 4.0,
     badge: 'Oferta',
     onSale: true,
-    sizes: ['M', 'L', 'XL'],
-    colors: ['Rosa']
+    sizes: ['M', 'L', 'XL','XXL'],
+    colors: ['Azul']
   },
   {
     name: 'Camiseta Black Classic',

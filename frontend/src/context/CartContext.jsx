@@ -26,19 +26,26 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('cart', JSON.stringify(cartItems))
   }, [cartItems])
 
-  const addToCart = (product, quantity = 1) => {
+  const addToCart = (product, quantity = 1, selectedSize = null, selectedColor = null) => {
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item._id === product._id)
+      // Buscar si existe el mismo producto con la misma talla y color
+      const existingItem = prevItems.find(item => 
+        item._id === product._id && 
+        item.selectedSize === selectedSize && 
+        item.selectedColor === selectedColor
+      )
       
       if (existingItem) {
         return prevItems.map(item =>
-          item._id === product._id
+          item._id === product._id && 
+          item.selectedSize === selectedSize && 
+          item.selectedColor === selectedColor
             ? { ...item, quantity: item.quantity + quantity }
             : item
         )
       }
       
-      return [...prevItems, { ...product, quantity }]
+      return [...prevItems, { ...product, quantity, selectedSize, selectedColor }]
     })
   }
 

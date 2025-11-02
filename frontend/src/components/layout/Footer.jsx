@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { subscribeNewsletter } from '../../services/generalService'
+import TermsAndConditions from '../TermsAndConditions'
 
 const Footer = () => {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
+  const [showTerms, setShowTerms] = useState(false)
 
   const handleSubscribe = async (e) => {
     e.preventDefault()
@@ -50,6 +52,7 @@ const Footer = () => {
               <li><Link to="/" className="text-gray-400 hover:text-white transition">Inicio</Link></li>
               <li><Link to="/mujer" className="text-gray-400 hover:text-white transition">Mujer</Link></li>
               <li><Link to="/hombre" className="text-gray-400 hover:text-white transition">Hombre</Link></li>
+              <li><Link to="/accesorios" className="text-gray-400 hover:text-white transition">Accesorios</Link></li>
               <li><Link to="/destacados" className="text-gray-400 hover:text-white transition">Destacados</Link></li>
               <li><Link to="/promociones" className="text-gray-400 hover:text-white transition">Promociones</Link></li>
             </ul>
@@ -67,6 +70,18 @@ const Footer = () => {
                 <i className="fas fa-envelope mr-3"></i>
                 <span>aureavirtualshop@gmail.com</span>
               </div>
+            </div>
+            
+            {/* Términos y Condiciones Link */}
+            <div className="mt-6">
+              <h4 className="text-lg font-semibold mb-2">Legal</h4>
+              <button
+                onClick={() => setShowTerms(true)}
+                className="text-gray-400 hover:text-white transition flex items-center"
+              >
+                <i className="fas fa-file-contract mr-2"></i>
+                Términos y Condiciones
+              </button>
             </div>
           </div>
 
@@ -99,6 +114,9 @@ const Footer = () => {
           <p>&copy; 2025 Aurea Virtual Shop. Todos los derechos reservados.</p>
         </div>
       </div>
+
+      {/* Terms and Conditions Modal */}
+      <TermsAndConditions isOpen={showTerms} onClose={() => setShowTerms(false)} />
     </footer>
   )
 }

@@ -1,0 +1,19 @@
+{
+  "pdf_options": {
+    "format": "A4",
+    "margin": {
+      "top": "25mm",
+      "right": "20mm",
+      "bottom": "25mm",
+      "left": "20mm"
+    },
+    "printBackground": true,
+    "displayHeaderFooter": true,
+    "headerTemplate": "<style>section{margin:0 auto;font-size:9px;color:#999;width:100%;text-align:center;}</style><section><span class='title'></span></section>",
+    "footerTemplate": "<style>section{margin:0 auto;font-size:9px;color:#999;width:100%;text-align:center;font-family:system-ui;}</style><section>Áurea Virtual Shop (Liliam Boutique) - Guía del Proyecto | Página <span class='pageNumber'></span> de <span class='totalPages'></span></section>"
+  },
+  "stylesheet": [
+    "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.0/github-markdown.min.css"
+  ],
+  "css": "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1a1a1a; line-height: 1.7; } .markdown-body { max-width: 100%; padding: 0; } h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-top: 30px; page-break-before: always; } h1:first-of-type { page-break-before: avoid; margin-top: 0; } h2 { color: #34495e; border-bottom: 2px solid #95a5a6; padding-bottom: 8px; margin-top: 25px; } h3 { color: #555; margin-top: 20px; } code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; color: #e74c3c; font-size: 0.9em; } pre { background: #f8f8f8; border-left: 4px solid #3498db; padding: 15px; border-radius: 4px; overflow-x: auto; } blockquote { border-left: 4px solid #3498db; padding-left: 15px; color: #555; font-style: italic; margin: 20px 0; } a { color: #3498db; text-decoration: none; } strong { color: #2c3e50; } table { border-collapse: collapse; width: 100%; margin: 20px 0; } th { background: #3498db; color: white; padding: 10px; text-align: left; } td { border: 1px solid #ddd; padding: 8px; } tr:nth-child(even) { background: #f9f9f9; } ul, ol { padding-left: 25px; } li { margin: 5px 0; } hr { border: none; border-top: 2px solid #ecf0f1; margin: 30px 0; } .page-break { page-break-after: always; }"
+}

@@ -1,8 +1,11 @@
 import { useCart } from '../context/CartContext'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import TermsAndConditions from '../components/TermsAndConditions'
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart()
+  const [showTerms, setShowTerms] = useState(false)
 
   const handleWhatsAppOrder = () => {
     const telefono = "573006003786"
@@ -10,6 +13,8 @@ const Cart = () => {
     
     cartItems.forEach((item, index) => {
       mensaje += `${index + 1}. *${item.name}*\n`
+      if (item.selectedSize) mensaje += `   Talla: ${item.selectedSize}\n`
+      if (item.selectedColor) mensaje += `   Color: ${item.selectedColor}\n`
       mensaje += `   Cantidad: ${item.quantity}\n`
       mensaje += `   Precio: $${item.price.toLocaleString('es-CO')}\n`
       mensaje += `   Subtotal: $${(item.price * item.quantity).toLocaleString('es-CO')}\n\n`
@@ -46,7 +51,7 @@ const Cart = () => {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-md">
               {cartItems.map((item) => (
-                <div key={item._id} className="flex items-center border-b last:border-b-0 p-6">
+                <div key={`${item._id}-${item.selectedSize}-${item.selectedColor}`} className="flex items-center border-b last:border-b-0 p-6">
                   <img 
                     src={item.image || '/images/placeholder.jpg'} 
                     alt={item.name}
@@ -54,6 +59,16 @@ const Cart = () => {
                   />
                   <div className="flex-grow ml-6">
                     <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
+                    {item.selectedSize && (
+                      <p className="text-sm text-gray-600 mt-1">
+                        <span className="font-medium">Talla:</span> {item.selectedSize}
+                      </p>
+                    )}
+                    {item.selectedColor && (
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Color:</span> {item.selectedColor}
+                      </p>
+                    )}
                     <p className="text-primary font-bold mt-1">
                       ${item.price.toLocaleString('es-CO')}
                     </p>
@@ -122,13 +137,30 @@ const Cart = () => {
                 Ordenar por WhatsApp
               </button>
 
-              <Link to="/" className="block text-center text-primary hover:underline">
+              <Link to="/" className="block text-center text-primary hover:underline mb-4">
                 Continuar comprando
               </Link>
+
+              {/* Términos y Condiciones */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <button
+                  onClick={() => setShowTerms(true)}
+                  className="w-full text-sm text-gray-600 hover:text-primary transition flex items-center justify-center"
+                >
+                  <i className="fas fa-file-contract mr-2"></i>
+                  Ver Términos y Condiciones
+                </button>
+                <p className="text-xs text-gray-500 text-center mt-2">
+                  Al realizar el pedido, aceptas nuestros términos y condiciones
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Terms and Conditions Modal */}
+      <TermsAndConditions isOpen={showTerms} onClose={() => setShowTerms(false)} />
     </div>
   )
 }

@@ -78,6 +78,20 @@ const productSchema = new mongoose.Schema({
   colors: [{
     type: String
   }],
+  // Stock por variante (talla + color)
+  variants: [{
+    size: { type: String },
+    color: { type: String },
+    stock: { type: Number, default: 0, min: 0 },
+    sku: { type: String }
+  }],
+  // Detalles adicionales del producto
+  details: {
+    materials: { type: String, trim: true },
+    care: { type: String, trim: true },
+    features: [{ type: String, trim: true }],
+    fit: { type: String, trim: true }
+  },
   active: {
     type: Boolean,
     default: true

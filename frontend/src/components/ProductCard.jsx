@@ -15,7 +15,14 @@ const ProductCard = ({ product }) => {
 
   const handleWhatsApp = () => {
     const telefono = "573054412261"
-    const mensaje = `Hola, estoy interesado/a en el producto: *${product.name}* por $${product.price.toLocaleString('es-CO')} ¿Está disponible?`
+    const productUrl = `${window.location.origin}/producto/${product._id}`
+    const mensaje = `Hola, estoy interesado/a en este producto:
+
+*${product.name}*
+💰 Precio: $${product.price.toLocaleString('es-CO')}
+🔗 Ver producto: ${productUrl}
+
+¿Está disponible?`
     const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
     window.open(url, "_blank")
   }

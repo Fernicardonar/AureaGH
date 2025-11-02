@@ -57,6 +57,7 @@ const Header = () => {
             <Link to="/" className="text-gray-700 hover:text-primary transition">Inicio</Link>
             <Link to="/mujer" className="text-gray-700 hover:text-primary transition">Mujer</Link>
             <Link to="/hombre" className="text-gray-700 hover:text-primary transition">Hombre</Link>
+            <Link to="/accesorios" className="text-gray-700 hover:text-primary transition">Accesorios</Link>
             <Link to="/destacados" className="text-gray-700 hover:text-primary transition">Destacados</Link>
             <Link to="/promociones" className="text-gray-700 hover:text-primary transition">Promociones</Link>
             <Link to="/contacto" className="text-gray-700 hover:text-primary transition">Contacto</Link>
@@ -134,6 +135,7 @@ const Header = () => {
               <Link to="/" className="text-gray-700 hover:text-primary transition">Inicio</Link>
               <Link to="/mujer" className="text-gray-700 hover:text-primary transition">Mujer</Link>
               <Link to="/hombre" className="text-gray-700 hover:text-primary transition">Hombre</Link>
+              <Link to="/accesorios" className="text-gray-700 hover:text-primary transition">Accesorios</Link>
               <Link to="/destacados" className="text-gray-700 hover:text-primary transition">Destacados</Link>
               <Link to="/promociones" className="text-gray-700 hover:text-primary transition">Promociones</Link>
               <Link to="/contacto" className="text-gray-700 hover:text-primary transition">Contacto</Link>
