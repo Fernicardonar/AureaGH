@@ -61,6 +61,11 @@ const Header = () => {
             <Link to="/destacados" className="text-gray-700 hover:text-primary transition">Destacados</Link>
             <Link to="/promociones" className="text-gray-700 hover:text-primary transition">Promociones</Link>
             <Link to="/contacto" className="text-gray-700 hover:text-primary transition">Contacto</Link>
+            {user?.role === 'admin' && (
+              <Link to="/admin/products" className="text-gray-700 hover:text-primary transition">
+                Admin
+              </Link>
+            )}
           </nav>
 
           {/* Icons */}
@@ -139,6 +144,9 @@ const Header = () => {
               <Link to="/destacados" className="text-gray-700 hover:text-primary transition">Destacados</Link>
               <Link to="/promociones" className="text-gray-700 hover:text-primary transition">Promociones</Link>
               <Link to="/contacto" className="text-gray-700 hover:text-primary transition">Contacto</Link>
+              {user?.role === 'admin' && (
+                <Link to="/admin/products" className="text-gray-700 hover:text-primary transition">Admin</Link>
+              )}
             </div>
           </nav>
         )}

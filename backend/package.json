@@ -6,7 +6,17 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "seed": "node src/seeds/seedProducts.js"
+  "seed": "node src/seeds/seedProducts.js additive",
+  "seed:additive": "node src/seeds/seedProducts.js additive",
+  "seed:overwrite": "node src/seeds/seedProducts.js overwrite",
+  "seed:reset": "node src/seeds/seedProducts.js reset",
+  "seed:from-json:additive": "node src/seeds/seedProducts.js additive json",
+  "seed:from-json:overwrite": "node src/seeds/seedProducts.js overwrite json",
+  "seed:from-json:reset": "node src/seeds/seedProducts.js reset json",
+  "export:products": "node src/scripts/exportProducts.js",
+  "import:products:additive": "node src/scripts/importProducts.js additive",
+  "import:products:overwrite": "node src/scripts/importProducts.js overwrite",
+  "import:products:reset": "node src/scripts/importProducts.js reset"
   },
   "keywords": ["ecommerce", "fashion", "api", "mongodb"],
   "author": "Fernando",

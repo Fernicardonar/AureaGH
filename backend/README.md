@@ -13,7 +13,20 @@ npm run dev
 
 - `npm run dev` - Ejecutar con nodemon (desarrollo)
 - `npm start` - Ejecutar en producción
-- `npm run seed` - Poblar base de datos con productos de ejemplo
+- Seed (catálogo embebido en código)
+  - `npm run seed` (por defecto aditivo)
+  - `npm run seed:additive`
+  - `npm run seed:overwrite`
+  - `npm run seed:reset`
+- Seed desde JSON (lee `src/seeds/products.json`)
+  - `npm run seed:from-json:additive`
+  - `npm run seed:from-json:overwrite`
+  - `npm run seed:from-json:reset`
+- Export/Import (round-trip admin ⇄ seed JSON)
+  - `npm run export:products` (DB → `src/seeds/products.json`)
+  - `npm run import:products:additive` (JSON → DB)
+  - `npm run import:products:overwrite` (JSON → DB)
+  - `npm run import:products:reset` (JSON → DB)
 
 ## 🏗️ Arquitectura MVC
 
@@ -202,15 +215,59 @@ NODE_ENV=development
 2. Generar contraseña de aplicación
 3. Usar esa contraseña en `EMAIL_PASS`
 
-## 🌱 Seed de Datos
+## 🌱 Seed de Datos y Round‑Trip con JSON
 
-Poblar la base de datos con productos de ejemplo:
+Tienes dos fuentes para poblar/actualizar el catálogo:
 
-```bash
-npm run seed
-```
+1) Catálogo embebido en código (`src/seeds/seedProducts.js`)
 
-Esto creará 8 productos de ejemplo en diferentes categorías.
+- Aditivo (inserta solo lo que no existe por SKU):
+  ```bash
+  npm run seed:additive
+  ```
+- Overwrite (actualiza por SKU, no borra otros registros):
+  ```bash
+  npm run seed:overwrite
+  ```
+- Reset (BORRA todo y deja exactamente lo del seed):
+  ```bash
+  npm run seed:reset
+  ```
+
+2) Catálogo en JSON (`src/seeds/products.json`)
+
+- Generar el JSON desde tu base actual (admin → JSON):
+  ```bash
+  npm run export:products
+  ```
+  Crea/actualiza `src/seeds/products.json` con los productos de la DB (excluye `_id`, `__v`, timestamps y `reviews`).
+
+- Importar el JSON a la DB:
+  - Aditivo:
+    ```bash
+    npm run import:products:additive
+    ```
+  - Overwrite:
+    ```bash
+    npm run import:products:overwrite
+    ```
+  - Reset:
+    ```bash
+    npm run import:products:reset
+    ```
+
+- Usar el seed pero leyendo el JSON (misma semántica que arriba):
+  ```bash
+  npm run seed:from-json:additive
+  npm run seed:from-json:overwrite
+  npm run seed:from-json:reset
+  ```
+
+Notas clave:
+- Identidad por SKU: todos los modos usan `sku` para insertar/actualizar.
+- Overwrite pisa campos existentes del producto para ese SKU.
+- Reset borra el catálogo y lo repuebla según la fuente elegida.
+- Cambios hechos desde el admin afectan directamente la DB y NO cambian el seed de código. Usa `export:products` cuando quieras convertir el estado actual en tu “nuevo seed JSON”.
 
 ## 🛡️ Seguridad
 

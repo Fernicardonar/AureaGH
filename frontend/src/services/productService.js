@@ -5,6 +5,12 @@ export const getAllProducts = async () => {
   return response.data
 }
 
+// Admin - incluye inactivos
+export const getAllProductsAdmin = async () => {
+  const response = await api.get('/products/all')
+  return response.data
+}
+
 export const getProductById = async (id) => {
   const response = await api.get(`/products/${id}`)
   return response.data
@@ -37,5 +43,21 @@ export const addReview = async (productId, { rating, comment }) => {
 
 export const toggleFavorite = async (productId) => {
   const response = await api.post(`/products/${productId}/favorite`)
+  return response.data
+}
+
+// Admin operations
+export const createProduct = async (payload) => {
+  const response = await api.post('/products', payload)
+  return response.data
+}
+
+export const updateProductAdmin = async (id, payload) => {
+  const response = await api.put(`/products/${id}`, payload)
+  return response.data
+}
+
+export const deleteProductAdmin = async (id) => {
+  const response = await api.delete(`/products/${id}`)
   return response.data
 }

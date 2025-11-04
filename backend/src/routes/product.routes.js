@@ -3,6 +3,7 @@ const router = express.Router()
 const { protect, admin } = require('../middleware/auth.middleware')
 const {
   getAllProducts,
+  getAllProductsAdmin,
   getProductById,
   getProductsByCategory,
   getFeaturedProducts,
@@ -17,6 +18,7 @@ const {
 
 // Rutas públicas
 router.get('/', getAllProducts)
+router.get('/all', protect, admin, getAllProductsAdmin)
 router.get('/search', searchProducts)
 router.get('/featured', getFeaturedProducts)
 router.get('/promotions', getPromotions)

@@ -101,7 +101,7 @@ const Register = () => {
                 value={formData.telefono}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="+57 300 123 4567"
+                placeholder="+57 3054412261"
               />
             </div>
 

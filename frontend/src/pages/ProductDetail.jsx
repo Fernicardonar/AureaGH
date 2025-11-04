@@ -38,6 +38,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1)
   const [selectedSize, setSelectedSize] = useState(null)
   const [selectedColor, setSelectedColor] = useState(null)
+  const [activeImage, setActiveImage] = useState(0)
   const [availableStock, setAvailableStock] = useState(0)
   const [myRating, setMyRating] = useState(0)
   const [submitting, setSubmitting] = useState(false)
@@ -86,7 +87,7 @@ const ProductDetail = () => {
   }
 
   const handleWhatsApp = () => {
-    const telefono = "573006003786"
+    const telefono = "573054412261"
     const productUrl = `${window.location.origin}/producto/${id}`
     let mensaje = `Hola, estoy interesado/a en este producto:
 
@@ -141,6 +142,8 @@ const ProductDetail = () => {
     )
   }
 
+  const gallery = [product.image, ...(product.images || [])].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i)
+
   return (
     <div className="py-16 bg-gray-50 min-h-screen">
       <div className="container-custom">
@@ -153,13 +156,29 @@ const ProductDetail = () => {
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Product Image */}
+          {/* Product Images Gallery */}
           <div>
-            <img 
-              src={product.image || '/images/placeholder.jpg'} 
-              alt={product.name}
-              className="w-full rounded-lg shadow-lg"
-            />
+            <div className="w-full rounded-lg shadow-lg overflow-hidden bg-white">
+              <img 
+                src={(gallery[activeImage]) || '/images/placeholder.jpg'} 
+                alt={product.name}
+                className="w-full object-cover"
+              />
+            </div>
+            {gallery.length > 1 && (
+              <div className="grid grid-cols-5 sm:grid-cols-6 gap-2 mt-3">
+                {gallery.map((img, idx) => (
+                  <button
+                    key={img+idx}
+                    type="button"
+                    onClick={() => setActiveImage(idx)}
+                    className={`relative border rounded overflow-hidden ${activeImage===idx ? 'ring-2 ring-primary' : ''}`}
+                  >
+                    <img src={img} alt={`${product.name} ${idx+1}`} className="w-full h-16 object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
@@ -211,9 +230,9 @@ const ProductDetail = () => {
             )}
 
             <div className="mb-6">
-              {product.originalPrice && (
+              {Number(product.originalPrice) > 0 && (
                 <span className="text-2xl text-gray-400 line-through mr-3">
-                  ${product.originalPrice.toLocaleString('es-CO')}
+                  ${Number(product.originalPrice).toLocaleString('es-CO')}
                 </span>
               )}
               <span className="text-4xl font-bold text-primary">

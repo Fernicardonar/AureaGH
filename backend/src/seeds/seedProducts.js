@@ -37,7 +37,20 @@ function generateVariants(sizes, colors, stockPerVariant = 3, prefix = 'PROD') {
   return variants
 }
 
-const products = [
+// Generar SKU de producto (top-level) a partir del nombre y categoría de forma determinística
+function generateProductSku(p) {
+  const cat = (p.category || 'gen').slice(0,3).toUpperCase()
+  const base = (p.name || 'PROD')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'') // quitar acentos
+    .replace(/[^a-zA-Z0-9]+/g,'-')
+    .replace(/^-+|-+$/g,'')
+    .toUpperCase()
+    .slice(0, 16)
+  return `${cat}-${base}`
+}
+
+let products = [
   // PRODUCTOS MUJER (12 productos)
   {
     name: 'Vestido Negro Elegance',
@@ -421,14 +434,66 @@ const products = [
 const seedProducts = async () => {
   try {
     await connectDB()
-    
-    // Limpiar productos existentes
-    await Product.deleteMany()
-    console.log('🗑️  Productos anteriores eliminados')
-    
-    // Insertar nuevos productos
-    await Product.insertMany(products)
-    console.log(`✅ ${products.length} productos creados exitosamente`)
+    const fs = require('fs')
+    const path = require('path')
+    const argModeRaw = (process.argv[2] || '').toLowerCase()
+    const envMode = (process.env.SEED_MODE || '').toLowerCase()
+    const mode = (argModeRaw || envMode || 'additive').toLowerCase()
+    const extra = (process.argv[3] || '').toLowerCase()
+    const useJson = /json|from-json/.test([argModeRaw, extra, process.env.SEED_SOURCE || ''].join(' '))
+    console.log(`🌱 Modo seed: ${mode} (SEED_MODE=reset|additive|overwrite)`)    
+    // Fuente de datos: JSON opcional
+    if (useJson) {
+      const jsonPath = path.join(__dirname, 'products.json')
+      if (fs.existsSync(jsonPath)) {
+        try {
+          const raw = fs.readFileSync(jsonPath, 'utf8')
+          const arr = JSON.parse(raw)
+          if (Array.isArray(arr)) {
+            products = arr
+            console.log(`📦 Cargando ${products.length} productos desde products.json`)
+          }
+        } catch (e) {
+          console.warn('⚠️  No se pudo leer products.json, se usará el catálogo embebido.')
+        }
+      } else {
+        console.warn('ℹ️  products.json no existe, se usará el catálogo embebido.')
+      }
+    }
+
+    // Asegurar SKU top-level para identidad: si falta, se genera determinísticamente
+    const withSku = products.map(p => ({ ...p, sku: p.sku || generateProductSku(p) }))
+    if (mode === 'reset') {
+      await Product.deleteMany()
+      console.log('🗑️  Productos anteriores eliminados')
+      await Product.insertMany(withSku)
+      console.log(`✅ ${withSku.length} productos creados (reset)`)      
+    } else if (mode === 'additive') {
+      // Inserta solo si no existe un producto con el mismo nombre
+      for (const p of withSku) {
+        await Product.updateOne(
+          { sku: p.sku },
+          { $setOnInsert: p },
+          { upsert: true }
+        )
+      }
+      console.log('✅ Seed aditivo: productos inexistentes insertados; existentes conservados')
+    } else if (mode === 'overwrite') {
+      // Sobrescribe si existe; útil para actualizar catálogo base sin borrar demás
+      for (const p of withSku) {
+        await Product.updateOne(
+          { sku: p.sku },
+          { $set: p },
+          { upsert: true }
+        )
+      }
+      console.log('✅ Seed overwrite: productos base actualizados/insertados')
+    } else {
+      console.warn('⚠️  SEED_MODE no reconocido, usando reset por defecto')
+      await Product.deleteMany()
+      await Product.insertMany(withSku)
+      console.log(`✅ ${withSku.length} productos creados (reset)`) 
+    }
     
     process.exit(0)
   } catch (error) {

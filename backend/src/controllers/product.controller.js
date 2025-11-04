@@ -13,6 +13,18 @@ exports.getAllProducts = async (req, res) => {
   }
 }
 
+// @desc    Obtener todos los productos (incluye inactivos) - Admin
+// @route   GET /api/products/all
+// @access  Private/Admin
+exports.getAllProductsAdmin = async (req, res) => {
+  try {
+    const products = await Product.find({})
+    res.json(products)
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener productos (admin)', error: error.message })
+  }
+}
+
 // @desc    Obtener producto por ID
 // @route   GET /api/products/:id
 // @access  Public
@@ -90,7 +102,14 @@ exports.searchProducts = async (req, res) => {
 // @access  Private/Admin
 exports.createProduct = async (req, res) => {
   try {
-    const product = await Product.create(req.body)
+    const body = { ...req.body }
+    if (Array.isArray(body.variants)) {
+      body.stock = body.variants.reduce((acc, v) => acc + Math.max(0, Number(v?.stock || 0)), 0)
+    }
+    if ((!body.image || body.image === '/images/placeholder.jpg') && Array.isArray(body.images) && body.images.length) {
+      body.image = body.images[0]
+    }
+    const product = await Product.create(body)
     res.status(201).json(product)
   } catch (error) {
     res.status(500).json({ message: 'Error al crear producto', error: error.message })
@@ -102,9 +121,16 @@ exports.createProduct = async (req, res) => {
 // @access  Private/Admin
 exports.updateProduct = async (req, res) => {
   try {
+    const body = { ...req.body }
+    if (Array.isArray(body.variants)) {
+      body.stock = body.variants.reduce((acc, v) => acc + Math.max(0, Number(v?.stock || 0)), 0)
+    }
+    if ((!body.image || body.image === '/images/placeholder.jpg') && Array.isArray(body.images) && body.images.length) {
+      body.image = body.images[0]
+    }
     const product = await Product.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      body,
       { new: true, runValidators: true }
     )
     

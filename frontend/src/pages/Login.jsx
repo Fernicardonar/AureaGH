@@ -1,13 +1,41 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const Login = () => {
+  const STORAGE_KEY = 'loginFormState'
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
+
+  // Restaurar estado previo (form y error) para evitar que se pierdan por remounts/renders
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        // TTL: 2 minutos
+        if (!parsed.ts || Date.now() - parsed.ts < 2 * 60 * 1000) {
+          if (parsed.formData) setFormData(parsed.formData)
+          if (parsed.error) setError(parsed.error)
+        } else {
+          sessionStorage.removeItem(STORAGE_KEY)
+        }
+      }
+    } catch (_) {}
+  }, [])
+
+  // Persistir cada cambio de form o error
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ formData, error, ts: Date.now() })
+      )
+    } catch (_) {}
+  }, [formData, error])
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -21,9 +49,12 @@ const Login = () => {
     const result = await login(formData.email, formData.password)
     
     if (result.success) {
+      try { sessionStorage.removeItem(STORAGE_KEY) } catch (_) {}
       navigate('/dashboard')
     } else {
       setError(result.error)
+      // Mantener visible; si quieres autocerrar, usa por ejemplo 15000 ms.
+      // setTimeout(() => setError(''), 15000)
     }
     setLoading(false)
   }
@@ -65,7 +96,15 @@ const Login = () => {
             </div>
 
             {error && (
-              <div className="bg-red-100 text-red-700 p-3 rounded-md text-sm">
+              <div className="bg-red-100 text-red-700 p-3 rounded-md text-sm relative">
+                <button
+                  type="button"
+                  onClick={() => setError('')}
+                  className="absolute right-2 top-1 text-red-500 hover:text-red-700"
+                  aria-label="Cerrar"
+                >
+                  ×
+                </button>
                 {error}
               </div>
             )}

@@ -69,9 +69,9 @@ const ProductCard = ({ product }) => {
         </Link>
         
         <div className="mb-2">
-          {product.originalPrice && (
+          {Number(product.originalPrice) > 0 && (
             <span className="text-gray-400 line-through mr-2">
-              ${product.originalPrice.toLocaleString('es-CO')}
+              ${Number(product.originalPrice).toLocaleString('es-CO')}
             </span>
           )}
           <span className="text-xl font-bold text-primary">

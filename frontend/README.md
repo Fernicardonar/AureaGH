@@ -72,7 +72,19 @@ Crear archivo `.env`:
 VITE_API_URL=http://localhost:3001/api
 ```
 
-## 📱 Páginas
+## � Catálogo y Seed (referencia)
+
+El panel de administración escribe directamente en la base de datos. Si quieres convertir el estado actual del catálogo en un seed JSON reutilizable (para clonar o resetear entornos), usa los scripts del backend:
+
+```bash
+# En backend/
+npm run export:products                 # DB → src/seeds/products.json
+npm run import:products:overwrite       # JSON → DB (por SKU)
+```
+
+Consulta el README del backend para todos los modos (additive/overwrite/reset) y las variantes `seed:from-json`.
+
+## �📱 Páginas
 
 - **Home** - Página principal con categorías y destacados
 - **Mujer/Hombre/Accesorios** - Catálogos por categoría
