@@ -35,7 +35,7 @@ const Home = () => {
               link="/mujer"
             />
             <CategoryCard 
-              image="/images/categories/Hombre/MONET5.jpg"
+              image="/images/categories/Hombre/BUSO1.jpg"
               title="Hombre"
               link="/hombre"
             />

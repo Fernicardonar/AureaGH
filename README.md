@@ -2,7 +2,11 @@
 
 > Documentación guía: consulta la guía completa en [`GUIA_PROYECTO.md`](GUIA_PROYECTO.md) o descarga el PDF en [`docs/GUIA_PROYECTO.pdf`](docs/GUIA_PROYECTO.pdf).
 
-Aplicación moderna de eCommerce para Liliam Boutique, desarrollada con React + Vite en el frontend y Node.js + Express + MongoDB en el backend.
+# 🛍️ Áurea Virtual Shop - Aplicación Completa
+
+---
+
+Aplicación moderna de eCommerce para Áurea Virtual Shop, desarrollada con React + Vite en el frontend y Node.js + Express + MongoDB en el backend.
 
 > Nueva: consulta la guía integral del proyecto en `GUIA_PROYECTO.md` para una explicación clara de estructura, recursos, endpoints y operación.
 
@@ -215,4 +219,4 @@ Fernando
 
 ---
 
-**¡Disfruta de tu nueva aplicación moderna de Liliam Boutique! 🎉**
+**¡Disfruta de tu nueva aplicación moderna de Áurea Virtual Shop! 🎉**

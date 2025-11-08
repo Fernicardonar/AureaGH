@@ -1,4 +1,4 @@
-# 🔧 Backend - Liliam Boutique API
+# 🔧 Backend - Áurea Virtual Shop API
 
 API REST desarrollada con Node.js + Express + MongoDB
 
@@ -75,6 +75,7 @@ src/
 | Método | Endpoint | Descripción | Protegido |
 |--------|----------|-------------|-----------|
 | GET | `/` | Todos los productos | No |
+| GET | `/all` | Todos (incluye inactivos) | Admin |
 | GET | `/:id` | Producto por ID | No |
 | GET | `/category/:category` | Por categoría | No |
 | GET | `/featured` | Destacados | No |
@@ -83,6 +84,8 @@ src/
 | POST | `/` | Crear producto | Admin |
 | PUT | `/:id` | Actualizar | Admin |
 | DELETE | `/:id` | Eliminar | Admin |
+| POST | `/:id/reviews` | Crear/actualizar calificación | Usuario |
+| POST | `/:id/favorite` | Marcar/desmarcar favorito | Usuario |
 
 ### 📦 Órdenes (`/api/orders`)
 
@@ -171,6 +174,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 - featured, onSale, active
 - sizes[], colors[]
 - timestamps
+
+Notas del modelo y lógica:
+- SKU único (índice `unique` + `sparse`).
+- Variantes por talla y color: `variants[]` con `{ size, color, stock, sku }`.
+- El `stock` total del producto se recalcula como la suma de `variants[].stock` en create/update.
+- Si `image` está vacío pero `images[]` tiene elementos, se toma la primera como imagen principal.
 
 ### Order
 - user (ref User)

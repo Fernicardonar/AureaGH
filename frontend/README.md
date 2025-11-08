@@ -1,4 +1,4 @@
-# 🎨 Frontend - Liliam Boutique
+# 🎨 Frontend - Áurea Virtual Shop
 
 Frontend moderno desarrollado con React + Vite + Tailwind CSS
 
@@ -59,9 +59,20 @@ src/
 - 🎨 Tailwind CSS para estilos
 - 🧭 React Router para navegación
 - 📡 Axios para peticiones HTTP
-- 🔐 Autenticación con JWT
-- 🛒 Carrito de compras
-- 📱 Diseño responsive
+- 🔐 Autenticación con JWT (rutas protegidas)
+- 🛒 Carrito de compras con variantes (talla/color)
+- ❤️ Favoritos por usuario
+- 🖼️ Galería de imágenes por producto (miniaturas y principal)
+- 📏 Guía de tallas con conversión internacional
+- 📃 Modal de Términos y Condiciones (Footer y Carrito)
+- 🧩 Panel de Administración (CRUD) con:
+  - Matriz visual de variantes (Talla × Color) con stock y SKU por variante
+  - Gestor de imágenes (agregar, eliminar, reordenar, definir principal)
+  - Filtros por estado/categoría, búsqueda por nombre/SKU y ordenamientos
+  - Campo SKU de producto como identidad
+  - Entradas de tallas y colores con soporte para comas durante tipeo
+- � Flujo de WhatsApp con enlace al producto y atributos seleccionados
+- �📱 Diseño responsive
 - ⚡ Vite para desarrollo rápido
 
 ## 🔧 Configuración
@@ -72,7 +83,7 @@ Crear archivo `.env`:
 VITE_API_URL=http://localhost:3001/api
 ```
 
-## � Catálogo y Seed (referencia)
+## 📚 Catálogo y Seed (referencia)
 
 El panel de administración escribe directamente en la base de datos. Si quieres convertir el estado actual del catálogo en un seed JSON reutilizable (para clonar o resetear entornos), usa los scripts del backend:
 
@@ -84,7 +95,14 @@ npm run import:products:overwrite       # JSON → DB (por SKU)
 
 Consulta el README del backend para todos los modos (additive/overwrite/reset) y las variantes `seed:from-json`.
 
-## �📱 Páginas
+## 🧪 Detalles de UX y validaciones
+
+- El precio original (`originalPrice`) puede dejarse vacío (no se fuerza a 0). Se muestra solo si es un número > 0.
+- Selección de talla y color deshabilita combinaciones sin stock y muestra stock disponible para la variante.
+- El input de tallas y colores permite escribir comas; el valor se consolida al salir del campo o al guardar.
+- La imagen principal se toma de `image` o, si está vacío, del primer elemento de `images[]`.
+
+## 📱 Páginas
 
 - **Home** - Página principal con categorías y destacados
 - **Mujer/Hombre/Accesorios** - Catálogos por categoría
@@ -129,6 +147,17 @@ Las rutas que requieren autenticación usan el componente `PrivateRoute`:
 ## 📞 Integración WhatsApp
 
 Botón flotante y funcionalidad de compra por WhatsApp incluida en ProductCard y Cart.
+
+## 📸 Sugerencias de capturas (para documentación/demo)
+
+Incluye screenshots de:
+- Home con destacados y tarjetas de producto (sin “0” previo al precio).
+- Página de Producto: galería, selector de talla/color, disponibilidad y WhatsApp.
+- Carrito: ítems con talla/color y control de cantidad respetando stock.
+- Modal Guía de Tallas y Modal Términos y Condiciones.
+- Panel Admin: listado con filtros/búsqueda/orden y columnas de SKU.
+- Editor de Producto en Admin: gestor de imágenes y matriz de variantes.
+- Ejecución de `npm run export:products` y `seed:from-json:*` mostrando resultados en terminal.
 
 ---
 

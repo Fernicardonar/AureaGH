@@ -1,4 +1,4 @@
-# 📘 Guía del Proyecto: Áurea Virtual Shop (Liliam Boutique)
+# 📘 Guía del Proyecto: Áurea Virtual Shop
 
 Documento guía para explicar de forma clara la estructura, los recursos, los aplicativos (frontend y backend) y los aspectos clave del sistema.
 
@@ -13,9 +13,13 @@ Documento guía para explicar de forma clara la estructura, los recursos, los ap
 - Frontend SPA en React + Vite + Tailwind CSS
 - Backend API REST en Node.js + Express
 - Base de datos MongoDB (Atlas en la nube)
-- Autenticación JWT, carrito con persistencia local, newsletter y contacto por email
+- Autenticación JWT con roles (user/admin), carrito con variantes (talla/color), favoritos sincronizados
+- Panel de administración completo con CRUD de productos, matriz de variantes, gestor de imágenes
+- Sistema de export/import de catálogo (round-trip admin ⇄ JSON seed)
+- Guía de tallas, términos y condiciones, integración WhatsApp con atributos de producto
+- Newsletter y contacto por email
 
-Diagrama general: ver `ARCHITECTURE.md`.
+Diagrama general: ver `ARCHITECTURE.md` o `MVP-REPORT.md`.
 
 ---
 
@@ -68,6 +72,16 @@ Componentes principales:
     - **Carrito**: Lista de items, modificar quantity, eliminar, calcular total, botón WhatsApp/Checkout.
     - **ProductDetail**: Vista detallada con galería, descripción, tallas/colores, agregar al carrito, reseñas.
     - **Dashboard**: Página privada. Muestra perfil, órdenes, favoritos, permite editar datos.
+    - **Admin (ProductsAdmin)**: Panel de administración con CRUD completo:
+      - Listado con filtros (estado: activo/inactivo, categoría), búsqueda por nombre/SKU, ordenamientos (fecha, precio, nombre).
+      - Formulario de creación/edición con:
+        - Campos básicos: nombre, SKU, descripción, precio, precio original (opcional), categoría, badge.
+        - Gestor de imágenes: agregar URLs, eliminar, reordenar, definir imagen principal.
+        - Matriz de variantes (Talla × Color): grid visual con toggles para habilitar/deshabilitar, edición de stock y SKU por variante.
+        - Inputs de tallas y colores con soporte para comas (drafts que se consolidan al guardar/blur).
+        - Detalles del producto: materiales, cuidados, características (separadas por `|`), ajuste.
+        - Flags: Destacado, En oferta, Activo.
+      - Endpoint admin especial `/api/products/all` que incluye productos inactivos para gestión completa.
   
   - **Components**: Header, Footer, Layout, ProductCard, CategoryCard, WhatsAppButton, PrivateRoute.
     - **Header**: Navegación principal, logo, links de categorías, buscador, badge de carrito, botón login/logout.
@@ -77,6 +91,8 @@ Componentes principales:
     - **CategoryCard**: Tarjeta clickeable para navegar a categorías. Usada en Home.
     - **WhatsAppButton**: Botón flotante que abre chat de WhatsApp con mensaje predefinido.
     - **PrivateRoute**: HOC que verifica `isAuthenticated`. Si no, redirige a `/login`.
+    - **SizeGuide**: Modal interactivo con guía de tallas (ropa y calzado), conversiones internacionales (US/UK/EU), instrucciones de medición.
+    - **TermsModal**: Modal con términos y condiciones, accesible desde Footer y flujo de Carrito.
   
   - **Context**: `AuthContext`, `CartContext`, `ProductContext`, `FavoritesContext`.
     - **AuthContext**: Gestiona autenticación y sesión del usuario.
@@ -84,10 +100,10 @@ Componentes principales:
       - Métodos: `login(email, password)`, `register(userData)`, `logout()`.
       - Funcionalidad: Al montar, verifica token en localStorage, decodifica con `jwtDecode`, valida expiración. Si es válido, llama `/auth/me` para hidratar perfil. En login/register, guarda token y actualiza estado. En logout, limpia token y resetea usuario. Provee contexto global a toda la app.
     
-    - **CartContext**: Administra carrito de compras con persistencia local.
-      - Estados: `cartItems` (array de productos con quantity).
-      - Métodos: `addToCart(product, quantity)`, `removeFromCart(productId)`, `updateQuantity(productId, quantity)`, `clearCart()`, `getCartTotal()`, `getCartCount()`.
-      - Funcionalidad: Carga carrito desde localStorage al inicio. Detecta duplicados por `_id`, suma quantities o agrega nuevos items. Sincroniza cambios a localStorage vía `useEffect`. Calcula total y contador en tiempo real. Usado en header (badge), página de carrito y checkout.
+    - **CartContext**: Administra carrito de compras con persistencia local y soporte para variantes (talla/color).
+      - Estados: `cartItems` (array de productos con quantity, size, color).
+      - Métodos: `addToCart(product, quantity, size, color)`, `removeFromCart(productId, size, color)`, `updateQuantity(productId, size, color, quantity)`, `clearCart()`, `getCartTotal()`, `getCartCount()`.
+      - Funcionalidad: Carga carrito desde localStorage al inicio. Detecta duplicados por `_id + size + color`, suma quantities o agrega nuevos items con variante. Sincroniza cambios a localStorage vía `useEffect`. Calcula total y contador en tiempo real. Usado en header (badge), página de carrito y checkout. WhatsApp incluye atributos seleccionados en mensaje.
     
     - **ProductContext**: Centraliza acceso al catálogo de productos.
       - Estados: `products` (array completo), `loading`, `error`.
@@ -97,12 +113,12 @@ Componentes principales:
     - **FavoritesContext**: Sincroniza favoritos del usuario con backend.
       - Estados: `favorites` (Set de productIds), `loaded` (flag de carga inicial).
       - Métodos: `isFavorite(productId)`, `toggleFavorite(productId)`.
-      - Funcionalidad: Si usuario está autenticado, carga GET `/auth/favorites` al inicio y puebla Set. `toggleFavorite` envía POST, actualiza estado local optimísticamente y sincroniza con respuesta del servidor. Requiere autenticación; si no, retorna `{ requiresAuth: true }`. UI usa `isFavorite` para mostrar íconos activos/inactivos.
+      - Funcionalidad: Si usuario está autenticado, carga favoritos al inicio. `toggleFavorite` envía POST `/products/:id/favorite`, actualiza estado local optimísticamente y sincroniza con respuesta del servidor. Requiere autenticación; si no, retorna `{ requiresAuth: true }`. UI usa `isFavorite` para mostrar íconos activos/inactivos en tarjetas y detalle.
   
   - **Services (Axios)**: `authService`, `productService`, `orderService`, `generalService` (newsletter/contacto). Base URL configurable (`VITE_API_URL`).
     - **api.js**: Instancia base de Axios. Interceptor de request agrega token JWT automáticamente. Interceptor de response captura errores 401 y redirige a login.
     - **authService**: `loginUser`, `registerUser`, `getCurrentUser`, `updateProfile`, `getMyFavorites`.
-    - **productService**: `getAllProducts`, `getProductById`, `getProductsByCategory`, `getFeaturedProducts`, `getPromotions`, `searchProducts`, `addReview`, `toggleFavorite`.
+    - **productService**: `getAllProducts`, `getAllProductsAdmin` (admin only), `getProductById`, `getProductsByCategory`, `getFeaturedProducts`, `getPromotions`, `searchProducts`, `createProduct`, `updateProductAdmin`, `deleteProductAdmin`, `addReview`, `toggleFavorite`.
     - **orderService**: `createOrder`, `getMyOrders`, `getOrderById`.
     - **generalService**: `subscribeNewsletter`, `sendContactMessage`.
 
@@ -130,16 +146,17 @@ Flujos clave:
   8. Usuario puede filtrar, buscar o navegar entre categorías sin reload (SPA).
 
 - **Carrito**: 
-  1. Usuario hace clic en "Agregar al Carrito" en `ProductCard`.
-  2. `CartContext.addToCart(product, quantity)` se ejecuta.
-  3. Context verifica si producto ya existe en `cartItems` (por `_id`).
-  4. Si existe, incrementa `quantity`; si no, agrega nuevo item `{ ...product, quantity }`.
-  5. `useEffect` detecta cambio en `cartItems`, guarda en `localStorage.setItem('cart', JSON.stringify(cartItems))`.
-  6. UI actualiza badge de carrito con `getCartCount()` (suma de quantities).
-  7. Usuario navega a `/carrito`, ve lista de items, puede modificar quantity o eliminar.
-  8. Clic en "Ordenar por WhatsApp" genera mensaje pre-formateado con lista de productos y total.
-  9. Abre WhatsApp Web/App con `window.open()` y número de tienda.
-  10. (Opcional) Crear orden real: POST `/orders` con `cartItems`, dirección, método de pago → guarda en DB → limpia carrito.
+  1. Usuario hace clic en "Agregar al Carrito" en `ProductCard` o `ProductDetail`.
+  2. Si el producto tiene variantes, debe seleccionar talla y color antes de agregar.
+  3. `CartContext.addToCart(product, quantity, size, color)` se ejecuta.
+  4. Context verifica si producto ya existe en `cartItems` con la misma combinación `_id + size + color`.
+  5. Si existe, incrementa `quantity`; si no, agrega nuevo item `{ ...product, quantity, size, color }`.
+  6. `useEffect` detecta cambio en `cartItems`, guarda en `localStorage.setItem('cart', JSON.stringify(cartItems))`.
+  7. UI actualiza badge de carrito con `getCartCount()` (suma de quantities).
+  8. Usuario navega a `/carrito`, ve lista de items con talla/color, puede modificar quantity (respetando stock) o eliminar.
+  9. Clic en "Ordenar por WhatsApp" genera mensaje pre-formateado con lista de productos, atributos (talla/color), cantidades y total.
+  10. Abre WhatsApp Web/App con `window.open()` y número de tienda, incluyendo URL del producto en el mensaje.
+  11. (Opcional) Crear orden real: POST `/orders` con `cartItems`, dirección, método de pago → guarda en DB → limpia carrito.
 
 - **Favoritos**: 
   1. Usuario autenticado hace clic en ícono de corazón en `ProductCard`.
@@ -183,7 +200,17 @@ Variables backend (`backend/.env`):
 - `NODE_ENV=development|production`
 
 Scripts backend:
-- `npm run dev` | `npm start` | `npm run seed`
+- `npm run dev` | `npm start`
+- Seed (catálogo embebido):
+  - `npm run seed` (additive por defecto)
+  - `npm run seed:additive` | `npm run seed:overwrite` | `npm run seed:reset`
+- Seed desde JSON (`src/seeds/products.json`):
+  - `npm run seed:from-json:additive` | `npm run seed:from-json:overwrite` | `npm run seed:from-json:reset`
+- Export/Import (round-trip admin ⇄ JSON):
+  - `npm run export:products` (DB → `src/seeds/products.json`)
+  - `npm run import:products:additive` | `npm run import:products:overwrite` | `npm run import:products:reset`
+
+Identidad de productos: SKU único (top-level) + SKU por variante. Stock total se recalcula automáticamente como suma de `variants[].stock` al crear/actualizar productos.
 
 CORS: restringido por `FRONTEND_URL`.
 
@@ -205,17 +232,18 @@ Gestiona el ciclo de vida de usuarios y sesiones mediante JWT.
 ### 5.2 Productos (`/products`)
 CRUD y búsqueda de catálogo.
 
-- **GET `/`** (público): Lista todos los productos activos. Soporta paginación y filtros básicos.
+- **GET `/`** (público): Lista todos los productos activos (`active: true`). Soporta paginación y filtros básicos.
+- **GET `/all`** (admin): Lista todos los productos incluyendo inactivos. Para gestión administrativa completa.
 - **GET `/featured`** (público): Productos destacados (`featured: true`). Para carruseles o secciones especiales en Home.
 - **GET `/promotions`** (público): Productos en oferta (`onSale: true`). Muestra descuentos y precios originales.
 - **GET `/category/:category`** (público): Filtra por categoría (mujer/hombre/accesorios). Esencial para páginas de catálogo.
 - **GET `/search?q=...`** (público): Búsqueda full-text por nombre y descripción. Usa índices de texto en MongoDB.
-- **GET `/:id`** (público): Detalle completo de un producto (nombre, precio, stock, imágenes, reseñas, tallas, colores).
-- **POST `/`** (admin): Crea producto nuevo. Valida campos requeridos (name, price, category). Auto-genera SKU si se omite.
-- **PUT `/:id`** (admin): Actualiza producto existente. Permite cambiar stock, precios, estado (active/inactive).
+- **GET `/:id`** (público): Detalle completo de un producto (nombre, precio, stock, imágenes, reseñas, tallas, colores, variantes).
+- **POST `/`** (admin): Crea producto nuevo. Valida campos requeridos (name, price, category). Auto-genera SKU si se omite. Recalcula stock total desde variantes.
+- **PUT `/:id`** (admin): Actualiza producto existente. Permite cambiar stock, precios, variantes, estado (active/inactive). Recalcula stock y ajusta imagen principal si es necesario.
 - **DELETE `/:id`** (admin): Marca producto como inactivo o lo elimina (soft/hard delete según lógica).
-- **POST `/:id/reviews`** (usuario): Agrega/actualiza reseña y rating (1-5 estrellas). Calcula rating promedio del producto.
-- **POST `/:id/favorite`** (usuario): Toggle favorito. Si ya existe, lo quita; si no, lo agrega al array `favorites` del user.
+- **POST `/:id/reviews`** (usuario): Agrega/actualiza reseña y rating (1-5 estrellas). Calcula rating promedio del producto y actualiza `reviewsCount`.
+- **POST `/:id/favorite`** (usuario): Toggle favorito. Si ya existe, lo quita; si no, lo agrega al array `favorites` del user. Retorna estado actualizado.
 
 ### 5.3 Órdenes (`/orders`)
 Gestión de pedidos y seguimiento.
@@ -272,12 +300,12 @@ Ver detalles ampliados (request/response schemas, códigos de error, ejemplos cu
 - `name` (String, requerido): Nombre del producto (ej. "Vestido Rojo Elegante").
 - `description` (String): Descripción larga, materiales, cuidados.
 - `price` (Number, requerido, min: 0): Precio actual de venta (en centavos o pesos según lógica).
-- `originalPrice` (Number, opcional): Precio original (para calcular % descuento). Si `onSale: true`.
+- `originalPrice` (Number, opcional): Precio original (para calcular % descuento). Si `onSale: true`. Puede dejarse vacío (no se fuerza a 0).
 - `category` (String, enum: mujer/hombre/accesorios, requerido): Categoría principal. Usado para filtros.
-- `image` (String): URL o ruta de imagen principal (default placeholder).
-- `images` (Array String): Galería de imágenes adicionales (vistas secundarias).
-- `stock` (Number, default: 0, min: 0): Cantidad disponible. Control de inventario.
-- `sku` (String, único, sparse): Código único de producto. Usado para integraciones de inventario.
+- `image` (String): URL o ruta de imagen principal (default placeholder). Si está vacío pero `images[]` tiene elementos, se toma la primera.
+- `images` (Array String): Galería de imágenes adicionales (vistas secundarias). Reordenable en admin.
+- `stock` (Number, default: 0, min: 0): Cantidad disponible total. Se recalcula automáticamente como suma de `variants[].stock` en create/update.
+- `sku` (String, único, sparse): Código único de producto. Usado para integraciones de inventario y como identidad en seed/export/import.
 - `rating` (Number, 0-5): Promedio de calificaciones. Calculado a partir de `reviews`.
 - `reviewsCount` (Number): Total de reseñas. Optimización para evitar contar array cada vez.
 - `reviews` (Array): Subdocumentos con `user`, `rating`, `comment`, `createdAt`.
@@ -286,6 +314,8 @@ Ver detalles ampliados (request/response schemas, códigos de error, ejemplos cu
 - `onSale` (Boolean, default: false): Indica si tiene descuento activo.
 - `sizes` (Array String, enum: XS/S/M/L/XL/XXL): Tallas disponibles.
 - `colors` (Array String): Colores disponibles (ej. ["Rojo", "Negro"]).
+- `variants` (Array): Subdocumentos con `{ size, color, stock, sku }`. Define stock específico por combinación talla-color.
+- `details` (Object): Subdocumento con `materials` (String), `care` (String), `features` (Array String), `fit` (String). Información adicional del producto.
 - `active` (Boolean, default: true): Si está visible en catálogo. Soft delete.
 - `timestamps`: createdAt/updatedAt.
 
@@ -293,6 +323,12 @@ Ver detalles ampliados (request/response schemas, códigos de error, ejemplos cu
 - Text index en `name` y `description` (búsqueda full-text).
 - Compound index `{ category: 1, featured: 1 }` (optimiza queries de catálogo).
 - Index `{ onSale: 1 }` (páginas de promociones).
+- Unique index en `sku` (sparse, permite nulls pero no duplicados).
+
+**Lógica de negocio:**
+- Stock total se recalcula en create/update como suma de `variants[].stock`.
+- Si `image` está vacío/placeholder y `images[]` tiene elementos, se asigna la primera como imagen principal.
+- Admin puede gestionar variantes mediante matriz visual (Talla × Color) con toggles, stock y SKU por variante.
 
 **Relaciones:**
 - 1 Product → N Reviews (anidados como subdocumentos).
@@ -371,22 +407,32 @@ Checklist pre-producción: ver `DEPLOYMENT.md` (CORS, JWT_SECRET, IPs Atlas, var
 ## 9) Operación, Mantenimiento y Soporte
 
 - Logs: dashboards de hosting (Vercel/Railway/Render). Capturar errores relevantes.
-- Semillas/datos: `npm run seed` para poblar productos demo.
-- Usuarios admin: promover manualmente cambiando `role` en colección `users`.
-- Backups: habilitar backups/exports regulares en Atlas.
+- Semillas/datos:
+  - `npm run seed:additive` para poblar productos demo (inserta solo nuevos por SKU).
+  - `npm run export:products` para generar snapshot JSON del catálogo actual (DB → `src/seeds/products.json`).
+  - `npm run import:products:overwrite` para sincronizar catálogo desde JSON (útil en clonación de entornos).
+  - Seed modes: additive (solo inserta nuevos), overwrite (upsert por SKU), reset (borra todo y repuebla).
+- Usuarios admin: promover manualmente cambiando `role` en colección `users` o mediante endpoint futuro.
+- Backups: habilitar backups/exports regulares en Atlas. Usar `export:products` como snapshot portable del catálogo.
 - Monitoreo: Lighthouse + PageSpeed para frontend; métricas de hosting para backend.
-- Troubleshooting: ver `FAQ.md`.
+- Troubleshooting: ver `FAQ.md` y `MVP-REPORT.md` para detalles de arquitectura y flujos.
 
 ---
 
 ## 10) Roadmap (Sugerido)
 
+- ✅ Panel admin completo para CRUD de productos y gestión de variantes (matriz visual)
+- ✅ Sistema de export/import de catálogo (round-trip JSON)
+- ✅ Favoritos sincronizados con backend
+- ✅ Guía de tallas y términos y condiciones (modales)
+- ✅ Galería de imágenes por producto con reordenamiento
 - Integración de pagos (Stripe/PayPal/Mercado Pago)
-- Panel admin completo para CRUD de productos y gestión de órdenes
-- Subida y CDN de imágenes (Cloudinary/S3)
+- Gestión avanzada de órdenes en admin (cambio de estado, tracking)
+- Subida y CDN de imágenes (Cloudinary/S3) con optimización automática
 - Tests automáticos (Vitest/Jest + Supertest)
 - Internacionalización (i18n) y accesibilidad (a11y)
 - Cache y optimizaciones (React Query/RTK Query, ETags en API)
+- Historial de cambios de inventario y auditoría
 
 ---
 
@@ -402,11 +448,12 @@ Checklist pre-producción: ver `DEPLOYMENT.md` (CORS, JWT_SECRET, IPs Atlas, var
 
 ## 12) Referencias Rápidas
 
+- Informe MVP: `MVP-REPORT.md` (resumen ejecutivo, arquitectura, funcionalidades, capturas sugeridas)
 - Guía de inicio: `GETTING_STARTED.md`
 - Despliegue: `DEPLOYMENT.md`
 - Arquitectura: `ARCHITECTURE.md`
-- Backend/API: `backend/README.md`
-- Frontend: `frontend/README.md`
+- Backend/API: `backend/README.md` (endpoints, seed modes, export/import)
+- Frontend: `frontend/README.md` (características, UX, capturas sugeridas)
 - FAQ: `FAQ.md`
 
 —
